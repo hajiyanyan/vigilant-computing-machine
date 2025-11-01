@@ -1,0 +1,76 @@
+import tkinter as tk
+import random
+import time
+import threading
+import sys
+
+
+def show_warm_tip(index):
+    # 使用 after 方法在主线程中创建窗口
+    root.after(0, create_window, index)
+
+
+def create_window(index):
+    window = tk.Toplevel(root)  # 使用 Toplevel 而不是 Tk()
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    windows_width = 250
+    windows_height = 60
+    x = random.randint(0, screen_width - windows_width)
+    y = random.randint(0, screen_height - windows_height)
+
+    window.title(f'温馨提示好帅同学 {index + 1}')
+    window.geometry(f"{windows_width}x{windows_height}+{x}+{y}")
+
+    tips = random.choice([
+        '来个食梦兽把我家好帅的噩梦吃掉','来个食梦兽把我家好帅的噩梦吃掉',
+        '多喝热水', '保持微笑', '杜好帅要健健康康', '平平安安', '早点休息别熬夜打游戏',
+        '好好吃早饭', '我喜欢你的信息素', '今天过的开心吗', '天冷了', '多穿衣服','来个食梦兽把我家好帅的噩梦吃掉',
+        '这是谁家的爆炸头','好好吃晚饭','杜好帅最厉害了','好好吃午饭','抱抱杜好帅',
+        '杜好帅杜好帅杜好帅','谁家的丸子头','祝杜好帅少做噩梦','来个食梦兽把我家好帅的噩梦吃掉','小孩哥儿','别不想活！！',
+        '火鸡面是最不好吃的食物！！！','身体是革命的本钱','少吃垃圾食品','少打游戏'
+    ])
+    bgs = random.choice([
+        'lightpink', 'lightgreen', 'lightyellow', 'skyblue', 'lavender',
+        'plum', 'coral', 'bisque', 'aquamarine', 'mistyrose',
+        'honeydew', 'lavenderblush', 'oldlace'
+    ])
+
+    tk.Label(
+        window,
+        text=tips,
+        bg=bgs,
+        font=('微软雅黑', 16),
+        width=30,
+        height=3
+    ).pack()
+
+    window.attributes('-topmost', True)
+
+    def on_space(event):
+        window.destroy()
+        check_all_closed()
+
+    window.bind('<space>', on_space)
+    window.protocol("WM_DELETE_WINDOW", lambda: (window.destroy(), check_all_closed()))
+
+
+def check_all_closed():
+    # 检查是否所有窗口都已关闭
+    if not any(w.winfo_exists() for w in root.winfo_children() if isinstance(w, tk.Toplevel)):
+        root.quit()
+
+
+# 创建主窗口但不显示
+root = tk.Tk()
+root.withdraw()  # 隐藏主窗口
+
+# 使用定时器创建窗口，避免同时创建
+for i in range(150):
+    root.after(i * 100, show_warm_tip, i)  # 每100ms创建一个窗口
+
+try:
+    root.mainloop()
+finally:
+    root.destroy()
